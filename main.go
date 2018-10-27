@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/robfig/cron"
 	"github.com/takaishi/clon/config"
-	"github.com/takaishi/clon/job"
 	"github.com/urfave/cli"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -38,10 +37,9 @@ func action(c *cli.Context) error {
 
 	server := cron.New()
 
-	for _, task := range cfg.Tasks {
-		log.Printf("[DEBUG] %+v\n", task)
-		j := &job.Job{Name: task.Name, Command: task.Command}
-		server.AddJob(task.Schedule, j)
+	for _, job := range cfg.Jobs {
+		log.Printf("[DEBUG] %+v\n", job)
+		server.AddJob(job.Schedule, job)
 	}
 	for _, entry := range server.Entries() {
 		log.Printf("[DEBUG] entry: %+v\n", entry)

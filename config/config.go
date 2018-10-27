@@ -1,11 +1,7 @@
 package config
 
-type Config struct {
-	Tasks []Task `yaml:"tasks"`
-}
+import "github.com/takaishi/clon/job"
 
-type Task struct {
-	Name     string `yaml:"name"`
-	Schedule string `yaml:"schedule"`
-	Command  string `yaml:"command"`
+type Config struct {
+	Jobs []job.Job `yaml:"tasks"`
 }

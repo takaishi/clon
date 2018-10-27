@@ -7,12 +7,13 @@ import (
 )
 
 type Job struct {
-	Name    string
-	Command string
+	Name     string `yaml:"name"`
+	Schedule string `yaml:"schedule"`
+	Command  string `yaml:"command"`
 }
 
-func (c *Job) Run() {
-	cmd := strings.Split(c.Command, " ")
+func (j Job) Run() {
+	cmd := strings.Split(j.Command, " ")
 	out, err := exec.Command(cmd[0], cmd[1:]...).Output()
 	if err != nil {
 		log.Printf("[ERROR] Failed to exec: %s\n", err)
