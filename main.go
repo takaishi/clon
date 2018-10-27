@@ -20,36 +20,39 @@ func main() {
 	}
 
 	app.Action = func(c *cli.Context) error {
-		var cfg config.Config
-		log.Printf("[DEBUG] action")
-		data, err := ioutil.ReadFile(c.String("config"))
-		if err != nil {
-			return err
-		}
-		err = yaml.Unmarshal([]byte(data), &cfg)
-		if err != nil {
-			return err
-		}
-		log.Printf("[DEBUG] %+v\n", cfg)
-
-		server := cron.New()
-
-		for _, task := range cfg.Tasks {
-			log.Printf("[DEBUG] %+v\n", task)
-			j := &job.Job{Name: task.Name, Command: task.Command}
-			server.AddJob(task.Schedule, j)
-		}
-		for _, entry := range server.Entries() {
-			log.Printf("[DEBUG] entry: %+v\n", entry)
-			log.Printf("[DEBUG] entry.Job: %+v\n", entry.Job)
-		}
-		server.Run()
-
-		return nil
+		return action(c)
 	}
 
 	err := app.Run(os.Args)
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func action(c *cli.Context) error {
+	var cfg config.Config
+	log.Printf("[DEBUG] action")
+	data, err := ioutil.ReadFile(c.String("config"))
+	if err != nil {
+		return err
+	}
+	err = yaml.Unmarshal([]byte(data), &cfg)
+	if err != nil {
+		return err
+	}
+	log.Printf("[DEBUG] %+v\n", cfg)
+
+	server := cron.New()
+
+	for _, task := range cfg.Tasks {
+		log.Printf("[DEBUG] %+v\n", task)
+		j := &job.Job{Name: task.Name, Command: task.Command}
+		server.AddJob(task.Schedule, j)
+	}
+	for _, entry := range server.Entries() {
+		log.Printf("[DEBUG] entry: %+v\n", entry)
+		log.Printf("[DEBUG] entry.Job: %+v\n", entry.Job)
+	}
+	server.Run()
+	return nil
 }
