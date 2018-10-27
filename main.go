@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/robfig/cron"
+	"github.com/takaishi/clon/config"
 	"github.com/urfave/cli"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -11,27 +12,6 @@ import (
 	"os/exec"
 	"strings"
 )
-
-type Config struct {
-	Tasks []Task `yaml:"tasks"`
-}
-
-type Task struct {
-	Name     string `yaml:"name"`
-	Schedule string `yaml:"schedule"`
-	Command  string `yaml:"command"`
-}
-
-func (t *Task) Run() {
-	cmd := strings.Split(t.Command, " ")
-	out, err := exec.Command(cmd[0], cmd[1:]...).Output()
-	if err != nil {
-		log.Printf("[ERROR] Failed to exec: %s\n", err)
-	} else {
-		log.Printf("[INFO] %s\n", out)
-		log.Printf("[INFO] Success")
-	}
-}
 
 type clonJob struct {
 	name string
@@ -58,7 +38,7 @@ func main() {
 	}
 
 	app.Action = func(c *cli.Context) error {
-		var cfg Config
+		var cfg config.Config
 		log.Printf("[DEBUG] action")
 		data, err := ioutil.ReadFile(c.String("config"))
 		if err != nil {
