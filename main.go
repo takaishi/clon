@@ -34,18 +34,13 @@ func action(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	log.Printf("[DEBUG] %+v\n", cfg)
 
 	server := cron.New()
 
 	for _, job := range cfg.Jobs {
-		log.Printf("[DEBUG] %+v\n", job)
 		server.AddJob(job.Schedule, job)
 	}
-	for _, entry := range server.Entries() {
-		log.Printf("[DEBUG] entry: %+v\n", entry)
-		log.Printf("[DEBUG] entry.Job: %+v\n", entry.Job)
-	}
+
 	server.Run()
 	return nil
 }
