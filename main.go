@@ -14,7 +14,8 @@ func main() {
 	app := cli.NewApp()
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
-			Name: "config, c",
+			Name:  "config, c",
+			Value: "/etc/clon.yml",
 		},
 	}
 
