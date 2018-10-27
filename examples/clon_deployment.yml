@@ -1,0 +1,40 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: clon-config
+data:
+  clon.yml: |
+    tasks:
+    - name: "Hello World"
+      schedule: "@every 5s"
+      command: "echo Hello World"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clon
+  labels:
+    app: clon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clon
+  template:
+    metadata:
+      labels:
+        app: clon
+    spec:
+      containers:
+      - name: clon
+        image: takaishi/clon
+        command: ["/clon", "--config", "/etc/clon/clon.yml"]
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: clon-config
+          mountPath: /etc/clon
+      volumes:
+      - name: clon-config
+        configMap:
+          name: clon-config
