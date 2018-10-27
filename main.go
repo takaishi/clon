@@ -30,13 +30,7 @@ func main() {
 }
 
 func action(c *cli.Context) error {
-	var cfg config.Config
-	log.Printf("[DEBUG] action")
-	data, err := ioutil.ReadFile(c.String("config"))
-	if err != nil {
-		return err
-	}
-	err = yaml.Unmarshal([]byte(data), &cfg)
+	cfg, err := readConfig(c.String("config"))
 	if err != nil {
 		return err
 	}
@@ -55,4 +49,17 @@ func action(c *cli.Context) error {
 	}
 	server.Run()
 	return nil
+}
+
+func readConfig(configPath string) (config.Config, error) {
+	var cfg config.Config
+	data, err := ioutil.ReadFile(configPath)
+	if err != nil {
+		return cfg, err
+	}
+	err = yaml.Unmarshal([]byte(data), &cfg)
+	if err != nil {
+		return cfg, err
+	}
+	return cfg, nil
 }
