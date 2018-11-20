@@ -1,8 +1,9 @@
-FROM golang:1.11.1 as build
+FROM golang:1.11.2 as build
 
 ENV GOPATH=/go
 ENV PATH=$GOPATH/bin:$PATH
 ENV CGO_ENABLED 0
+ENV GO111MODULE on
 
 RUN mkdir -p /go/{src,bin,pkg}
 
