@@ -21,7 +21,7 @@ type Options struct {
 
 func (j Job) Run() {
 	now := time.Now()
-	if j.isJPHoliday(now) {
+	if j.Options.SkipJPHoliday && j.isJPHoliday(now) {
 		log.Printf("[INFO] Skip to execute job: %s/%s/%s is Japanese holiday.", now.Year(), now.Month(), now.Day())
 	} else {
 		cmd := strings.Split(j.Command, " ")
