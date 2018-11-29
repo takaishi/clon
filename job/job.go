@@ -3,6 +3,7 @@ package job
 import (
 	jp "github.com/kokardy/jpholiday"
 	"log"
+	"os"
 	"os/exec"
 	"strings"
 	"time"
@@ -24,12 +25,15 @@ func (j Job) Run() {
 	if j.Options.SkipJPHoliday && j.isJPHoliday(now) {
 		log.Printf("[INFO] Skip to execute job: %s/%s/%s is Japanese holiday.", now.Year(), now.Month(), now.Day())
 	} else {
-		cmd := strings.Split(j.Command, " ")
-		out, err := exec.Command(cmd[0], cmd[1:]...).Output()
+		cmdStr := strings.Split(j.Command, " ")
+		cmd := exec.Command(cmdStr[0], cmdStr[1:]...)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+
+		err := cmd.Run()
 		if err != nil {
 			log.Printf("[ERROR] Failed to exec: %s\n", err)
 		} else {
-			log.Printf("[INFO] %s\n", out)
 			log.Printf("[INFO] Success")
 		}
 	}
