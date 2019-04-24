@@ -35,7 +35,12 @@ func action(c *cli.Context) error {
 		return err
 	}
 
-	server := cron.New()
+	l, err :=  time.LoadLocation("Local")
+	if err != nil {
+		return err
+	}
+
+	server := cron.NewWithLocation(l)
 
 	for _, job := range cfg.Jobs {
 		server.AddJob(job.Schedule, job)
